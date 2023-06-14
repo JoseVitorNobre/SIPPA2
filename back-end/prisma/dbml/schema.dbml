@@ -1,0 +1,205 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table AuthToken {
+  id String [pk]
+  token String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  expiresAt DateTime [not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+  user_id String [unique, not null]
+}
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  name String [not null]
+  password String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  role Role [not null]
+  token AuthToken
+  student Student
+  teacher Teacher
+}
+
+Table Student {
+  id String [pk]
+  enrollment Int [unique, not null]
+  course Course [not null]
+  user User [not null]
+  user_id String [unique, not null]
+  classrooms ClassroomStudent [not null]
+  activities StudentActivity [not null]
+}
+
+Table Teacher {
+  id String [pk]
+  cpf String [unique, not null]
+  user User [not null]
+  user_id String [unique, not null]
+  classrooms Classroom [not null]
+}
+
+Table Discipline {
+  id String [pk]
+  code String [unique, not null]
+  name String [unique, not null]
+  ement String [not null]
+  credits Float [not null]
+  classrooms Classroom [not null]
+}
+
+Table Classroom {
+  id String [pk]
+  period String [not null]
+  teacher Teacher [not null]
+  teacher_id String [not null]
+  classroom_students ClassroomStudent [not null]
+  classrom_news ClassroomNew [not null]
+  discipline_id String [not null]
+  discipline Discipline [not null]
+  plan_id String [unique, not null]
+  plan Plan [not null]
+  Activity Activity [not null]
+}
+
+Table ClassroomNew {
+  id String [pk]
+  classroom Classroom [not null]
+  classroom_id String [not null]
+  title String [not null]
+  description String [not null]
+  date_of_post DateTime [default: `now()`, not null]
+
+  indexes {
+    (title, date_of_post, classroom_id) [unique]
+  }
+}
+
+Table GeneralNew {
+  id String [pk]
+  title String [unique, not null]
+  description String [not null]
+  image String [not null]
+  link String [not null]
+  date_of_post DateTime [default: `now()`, not null]
+}
+
+Table Activity {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+  receive_data DateTime
+  classroom Classroom [not null]
+  classroom_id String [not null]
+  points Float [not null, default: 0]
+  is_frequency_worthing Boolean [not null, default: false]
+  is_exam Boolean [not null, default: false]
+  file String
+  student_activities StudentActivity [not null]
+}
+
+Table ClassroomStudent {
+  student Student [not null]
+  student_id String [not null]
+  classroom Classroom [not null]
+  classroom_id String [not null]
+
+  indexes {
+    (classroom_id, student_id) [pk]
+  }
+}
+
+Table StudentActivity {
+  id String [pk]
+  student_id String [not null]
+  student Student [not null]
+  activity_id String [not null]
+  activity Activity [not null]
+  status Boolean [not null, default: false]
+  activity_points Float [not null, default: 0]
+  student_activity_files StudentActivityFile [not null]
+}
+
+Table StudentActivityFile {
+  student_activity StudentActivity [not null]
+  id_student_activity String [pk]
+  files File [not null]
+}
+
+Table File {
+  url String [pk]
+  student_activity_file StudentActivityFile
+  student_activity_id String
+}
+
+Table Plan {
+  id String [pk]
+  justify String [not null]
+  ement String [not null]
+  objective String [not null]
+  final_exam_data DateTime [not null]
+  teach_metodology String [not null]
+  discent_activity String [not null]
+  exam_description String [not null]
+  based_bibliography String [not null]
+  adicional_bibliography String [not null]
+  didatics_resources String [not null]
+  class_plans ClassPlan [not null]
+  classroom Classroom
+}
+
+Table ClassPlan {
+  id Int [pk]
+  plan_id String [not null]
+  plan Plan [not null]
+  class_date DateTime [not null]
+  class_plan String [not null]
+  class_diary String [not null]
+}
+
+Enum Course {
+  ES
+  EC
+  CC
+  SI
+  DD
+  RC
+}
+
+Enum Role {
+  STUDENT
+  TEACHER
+}
+
+Ref: AuthToken.user_id - User.id
+
+Ref: Student.user_id - User.id
+
+Ref: Teacher.user_id - User.id
+
+Ref: Classroom.teacher_id > Teacher.id
+
+Ref: Classroom.discipline_id > Discipline.id
+
+Ref: Classroom.plan_id - Plan.id
+
+Ref: ClassroomNew.classroom_id > Classroom.id
+
+Ref: Activity.classroom_id > Classroom.id
+
+Ref: ClassroomStudent.student_id > Student.id
+
+Ref: ClassroomStudent.classroom_id > Classroom.id
+
+Ref: StudentActivity.student_id > Student.id
+
+Ref: StudentActivity.activity_id > Activity.id
+
+Ref: StudentActivityFile.id_student_activity > StudentActivity.id
+
+Ref: File.student_activity_id > StudentActivityFile.id_student_activity
+
+Ref: ClassPlan.plan_id > Plan.id
