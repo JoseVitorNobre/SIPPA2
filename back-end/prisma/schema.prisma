@@ -1,0 +1,195 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Course {
+  ES
+  EC
+  CC
+  SI
+  DD
+  RC
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+model AuthToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  updatedAt DateTime
+
+  // Relacionamento com a tabela User
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
+  password  String
+  createdAt DateTime   @default(now())
+  role      Role
+  token     AuthToken?
+  student   Student?
+  teacher   Teacher?
+}
+
+model Student {
+  id         String             @id @default(uuid())
+  enrollment Int                @unique
+  course     Course
+  user       User               @relation(fields: [user_id], references: [id])
+  user_id    String             @unique
+  classrooms ClassroomStudent[]
+  activities StudentActivity[]
+}
+
+model Teacher {
+  id         String      @id @default(uuid())
+  cpf        String      @unique
+  user       User        @relation(fields: [user_id], references: [id])
+  user_id    String      @unique
+  classrooms Classroom[]
+}
+
+model Discipline {
+  id         String      @id @default(uuid())
+  code       String      @unique
+  name       String      @unique
+  ement      String
+  credits    Float
+  classrooms Classroom[]
+}
+
+model Classroom {
+  id                 String             @id @default(uuid())
+  period             String
+  teacher            Teacher            @relation(fields: [teacher_id], references: [id])
+  teacher_id         String
+  classroom_students ClassroomStudent[]
+  classrom_news      ClassroomNew[]
+  discipline_id      String
+  discipline         Discipline         @relation(fields: [discipline_id], references: [id])
+  plan_id            String             @unique
+  plan               Plan               @relation(fields: [plan_id], references: [id])
+  Activity           Activity[]
+}
+
+model ClassroomNew {
+  id           String    @id @default(uuid())
+  classroom    Classroom @relation(fields: [classroom_id], references: [id])
+  classroom_id String
+  title        String
+  description  String
+  date_of_post DateTime  @default(now())
+
+  @@unique([title, date_of_post, classroom_id])
+}
+
+model GeneralNew {
+  id           String   @id @default(uuid())
+  title        String   @unique
+  description  String
+  image        String
+  link         String
+  date_of_post DateTime @default(now())
+}
+
+model Activity {
+  id                    String            @id @default(uuid())
+  title                 String
+  description           String
+  receive_data          DateTime?
+  classroom             Classroom         @relation(fields: [classroom_id], references: [id])
+  classroom_id          String
+  points                Float             @default(0.0)
+  is_frequency_worthing Boolean           @default(false)
+  is_exam               Boolean           @default(false) // Se is_exam for true e sendable false significa que é uma prova
+  sendable              Boolean           @default(true) // Se is_exam for true e sendable também significa que é um trabalho
+  file                  String? //ele poderá não colocar file
+  student_activities    StudentActivity[]
+  SecondCall            SecondCall[]
+}
+
+model ClassroomStudent {
+  student      Student   @relation(fields: [student_id], references: [id])
+  student_id   String
+  classroom    Classroom @relation(fields: [classroom_id], references: [id])
+  classroom_id String
+
+  @@id([classroom_id, student_id])
+}
+
+model StudentActivity {
+  id              String   @id @default(uuid())
+  student_id      String
+  student         Student  @relation(fields: [student_id], references: [id])
+  activity_id     String
+  activity        Activity @relation(fields: [activity_id], references: [id])
+  status          Boolean  @default(false)
+  activity_points Float    @default(0.0)
+  files           File[]
+}
+
+model File {
+  url String @id
+
+  StudentActivity    StudentActivity? @relation(fields: [studentActivity_id], references: [id])
+  studentActivity_id String?
+}
+
+model Plan {
+  id                     String      @id @default(uuid())
+  justify                String
+  ement                  String
+  objective              String
+  final_exam_data        DateTime
+  teach_metodology       String
+  discent_activity       String
+  exam_description       String
+  based_bibliography     String
+  adicional_bibliography String
+  didatics_resources     String
+  class_plans            ClassPlan[]
+
+  classroom Classroom?
+}
+
+model ClassPlan {
+  id          Int      @id
+  plan_id     String
+  plan        Plan     @relation(fields: [plan_id], references: [id])
+  class_date  DateTime
+  class_plan  String
+  class_diary String
+}
+
+model SecondCall {
+  id           String   @id @default(uuid())
+  justify      String
+  createdAt    DateTime @default(now())
+  activity     Activity @relation(fields: [activity_id], references: [id])
+  activity_id  String
+  approved     Boolean  @default(false)
+  student_id   String
+  classroom_id String
+}
