@@ -18,7 +18,7 @@ datasource db {
 enum Course {
   ES
   EC
-  CC 
+  CC
   SI
   DD
   RC
@@ -123,9 +123,11 @@ model Activity {
   classroom_id          String
   points                Float             @default(0.0)
   is_frequency_worthing Boolean           @default(false)
-  is_exam               Boolean           @default(false)
+  is_exam               Boolean           @default(false) // Se is_exam for true e sendable false significa que é uma prova
+  sendable              Boolean           @default(true) // Se is_exam for true e sendable também significa que é um trabalho
   file                  String? //ele poderá não colocar file
   student_activities    StudentActivity[]
+  SecondCall            SecondCall[]
 }
 
 model ClassroomStudent {
@@ -138,27 +140,21 @@ model ClassroomStudent {
 }
 
 model StudentActivity {
-  id                     String                @id @default(uuid())
-  student_id             String
-  student                Student               @relation(fields: [student_id], references: [id])
-  activity_id            String
-  activity               Activity              @relation(fields: [activity_id], references: [id])
-  status                 Boolean               @default(false)
-  activity_points        Float                 @default(0.0)
-  student_activity_files StudentActivityFile[]
-}
-
-model StudentActivityFile {
-  student_activity    StudentActivity @relation(fields: [id_student_activity], references: [id])
-  id_student_activity String          @id
-  files               File[]
+  id              String   @id @default(uuid())
+  student_id      String
+  student         Student  @relation(fields: [student_id], references: [id])
+  activity_id     String
+  activity        Activity @relation(fields: [activity_id], references: [id])
+  status          Boolean  @default(false)
+  activity_points Float    @default(0.0)
+  files           File[]
 }
 
 model File {
   url String @id
 
-  student_activity_file StudentActivityFile? @relation(fields: [student_activity_id], references: [id_student_activity])
-  student_activity_id   String?
+  StudentActivity    StudentActivity? @relation(fields: [studentActivity_id], references: [id])
+  studentActivity_id String?
 }
 
 model Plan {
@@ -185,4 +181,15 @@ model ClassPlan {
   class_date  DateTime
   class_plan  String
   class_diary String
+}
+
+model SecondCall {
+  id           String   @id @default(uuid())
+  justify      String
+  createdAt    DateTime @default(now())
+  activity     Activity @relation(fields: [activity_id], references: [id])
+  activity_id  String
+  approved     Boolean  @default(false)
+  student_id   String
+  classroom_id String
 }

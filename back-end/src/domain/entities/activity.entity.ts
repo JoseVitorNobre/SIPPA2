@@ -6,7 +6,6 @@ export class Activity {
     title: string;
     description: string;
     receive_date?: Date;
-    classroom_id: string;
     points: number;
     is_frequency_worth: boolean;
     is_exam: boolean;

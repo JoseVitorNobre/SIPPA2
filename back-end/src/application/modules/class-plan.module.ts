@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ClassPlanController } from 'src/interfaces/http/controllers/class-plan.controller';
+import { ClassPlanController } from '../../interfaces/http/controllers/class-plan.controller';
 import { ClassPlanService } from '../services/class-plan.service';
-import { PrismaModule } from 'src/infrastructure/database/prisma/prisma.module';
-import { ClassPlanRepository } from 'src/infrastructure/repositories/class-plan.repository';
+import { PrismaModule } from '../../infrastructure/database/prisma/prisma.module';
+import { ClassPlanRepository } from '../../infrastructure/repositories/class-plan.repository';
 
 @Module({
   imports: [PrismaModule],

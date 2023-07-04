@@ -6,25 +6,36 @@ import { SelectItem } from './SelectItem';
 
 type SelectOption = {
    name: string;
+   value: string;
 };
 
 interface SelectProps {
    value: string;
-   options: SelectOption[];
+   options: SelectOption[] | undefined;
+   ariaLabel: string;
    onValueChange: (...event: any[]) => void;
 }
 
 export const Select = forwardRef(
-   ({ value, options, onValueChange }: SelectProps, forwardedRef: any) => {
+   (
+      { value, options = [], ariaLabel, onValueChange }: SelectProps,
+      forwardedRef: any
+   ) => {
       return (
          <SelectRadix.Root value={value} onValueChange={onValueChange}>
             <SelectRadix.Trigger
+               aria-label={ariaLabel}
                className="bg-gray-200 h-10 rounded justify-between flex items-center px-4 text-sm text-gray-600
-            focus:outline-green-400 focus:bg-green-100"
+               focus:outline-green-400 focus:bg-green-100"
                ref={forwardedRef}
             >
                <SelectRadix.Value asChild>
-                  <span>{value ? value : 'Selecione'}</span>
+                  <span>
+                     {options.map((item) => {
+                        if (item.value === value) return item.name;
+                     })}
+                     {!value && 'Selecione'}
+                  </span>
                </SelectRadix.Value>
                <SelectRadix.Icon>
                   <ChevronDown size={16} />
@@ -39,7 +50,10 @@ export const Select = forwardRef(
                >
                   <SelectRadix.Viewport className="px-2 py-3 flex flex-col gap-y-2">
                      {options.map((option) => (
-                        <SelectItem key={option.name} value={option.name}>
+                        <SelectItem
+                           key={option.value}
+                           value={option.value.toString()}
+                        >
                            {option.name}
                         </SelectItem>
                      ))}

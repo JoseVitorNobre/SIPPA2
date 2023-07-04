@@ -8,7 +8,6 @@ import { StudentService } from './student.service';
 import { getStudentCourse } from '../usecases/getStudentCourse.usecase';
 import { UserDataReturn } from '../../domain/models/UserDataReturn';
 import { ClassPlanService } from './class-plan.service';
-import { ClassroomNewsService } from './classroom-news.service';
 
 @Injectable()
 export class ClassroomService {
@@ -20,7 +19,6 @@ export class ClassroomService {
     private readonly classroomStudentService: ClassroomStudentService,
     private readonly studentService: StudentService,
     private readonly classPlanService: ClassPlanService,
-    private readonly classroomNews: ClassroomNewsService,
   ) {}
 
   findAll() {
@@ -105,14 +103,5 @@ export class ClassroomService {
       (await this.classroomRepository.findById(classroom_id)).plan_id
     );
     return classPlansReturn;
-  }
-
-  async findClassroomNews(classroom_id: string){
-    const classroomNewsReturn = (await this.classroomNews.findAll()).filter(
-      (classroomNews) => {
-        if (classroomNews.classroom_id === classroom_id) return classroomNews;
-      },
-    );
-    return classroomNewsReturn;
   }
 }

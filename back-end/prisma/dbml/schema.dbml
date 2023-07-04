@@ -97,8 +97,10 @@ Table Activity {
   points Float [not null, default: 0]
   is_frequency_worthing Boolean [not null, default: false]
   is_exam Boolean [not null, default: false]
+  sendable Boolean [not null, default: true]
   file String
   student_activities StudentActivity [not null]
+  SecondCall SecondCall [not null]
 }
 
 Table ClassroomStudent {
@@ -120,19 +122,13 @@ Table StudentActivity {
   activity Activity [not null]
   status Boolean [not null, default: false]
   activity_points Float [not null, default: 0]
-  student_activity_files StudentActivityFile [not null]
-}
-
-Table StudentActivityFile {
-  student_activity StudentActivity [not null]
-  id_student_activity String [pk]
   files File [not null]
 }
 
 Table File {
   url String [pk]
-  student_activity_file StudentActivityFile
-  student_activity_id String
+  StudentActivity StudentActivity
+  studentActivity_id String
 }
 
 Table Plan {
@@ -158,6 +154,17 @@ Table ClassPlan {
   class_date DateTime [not null]
   class_plan String [not null]
   class_diary String [not null]
+}
+
+Table SecondCall {
+  id String [pk]
+  justify String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  activity Activity [not null]
+  activity_id String [not null]
+  approved Boolean [not null, default: false]
+  student_id String [not null]
+  classroom_id String [not null]
 }
 
 Enum Course {
@@ -198,8 +205,8 @@ Ref: StudentActivity.student_id > Student.id
 
 Ref: StudentActivity.activity_id > Activity.id
 
-Ref: StudentActivityFile.id_student_activity > StudentActivity.id
-
-Ref: File.student_activity_id > StudentActivityFile.id_student_activity
+Ref: File.studentActivity_id > StudentActivity.id
 
 Ref: ClassPlan.plan_id > Plan.id
+
+Ref: SecondCall.activity_id > Activity.id

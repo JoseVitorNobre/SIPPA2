@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../../interfaces/http/dtos/user/create-user.dto';
 import { UpdateUserDto } from '../../interfaces/http/dtos/user/update-user.dto';
 import { UserRepository } from '../../infrastructure/repositories/user.repository';
@@ -10,10 +14,13 @@ export class UserService {
   constructor(private userRepository: UserRepository) {}
 
   async create(createUserDto: CreateUserDto) {
-    const existUser = await this.userRepository.findByEmail(createUserDto.email);
+    const existUser = await this.userRepository.findByEmail(
+      createUserDto.email,
+    );
     if (existUser) throw new ConflictException();
 
-    if (createUserDto.role === Role.STUDENT) return this.userRepository.createStudent(createUserDto);
+    if (createUserDto.role === Role.STUDENT)
+      return this.userRepository.createStudent(createUserDto);
     return this.userRepository.createTeacher(createUserDto);
   }
 
@@ -26,11 +33,12 @@ export class UserService {
     if (user) {
       let userReturn: any;
 
-      if (user.role === Role.STUDENT) userReturn = await this.userRepository.findById(user.id, true);
+      if (user.role === Role.STUDENT)
+        userReturn = await this.userRepository.findById(user.id, true);
       else userReturn = await this.userRepository.findById(user.id, false);
-      
+
       return userReturn;
-    };
+    }
 
     throw new NotFoundException();
   }

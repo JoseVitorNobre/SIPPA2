@@ -1,7 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname, useParams } from 'next/navigation';
+import Link from 'next/link';
+
 import { useSidebar } from '@/hooks/useSidebar';
 
 import '@/styles/utils.css';
@@ -22,7 +23,7 @@ const Sidebar = () => {
       <div className="bg-white h-14 shadow flex items-center">
          <div className="container-content">
             <div className="flex w-full gap-8">
-               {path.includes('/subject-details/')
+               {path.includes('/disciplinas/') && path.split('disciplinas/')[1]
                   ? subject_details.map((menu) => (
                        <SidebarItem
                           key={menu.name}
@@ -49,18 +50,18 @@ const SidebarItem = ({ name, pathName = '', icon }: SidebarItemProps) => {
    const path = usePathname();
 
    return (
-      <div className="">
+      <nav className="">
          <Link
             href={pathName}
             className={`group flex items-center gap-1 ${
-               path == pathName ? 'text-green-400' : 'text-gray-500'
+               path == pathName ? 'text-green-600' : 'text-gray-500'
             }`}
             prefetch={false}
          >
             <span className="item">{icon}</span>
-            <span className="item text-[13px]">{name}</span>
+            <span className={`item text-[13px]`}>{name}</span>
          </Link>
-      </div>
+      </nav>
    );
 };
 

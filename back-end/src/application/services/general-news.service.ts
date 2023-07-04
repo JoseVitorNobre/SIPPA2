@@ -13,11 +13,15 @@ export class GeneralNewsService {
     const generalNews = await this.generalNewsRepository.findAll();
     const generalNewsReturn = await Promise.all(
       generalNews.map(async (generalNew) => {
-        const generalNewsFind = await this.generalNewsRepository.findById(generalNew.id);
+        const generalNewsFind = await this.generalNewsRepository.findById(
+          generalNew.id,
+        );
         const URL = await this.supabaseService.getURL(generalNew.image);
+        const encodedImg = await this.supabaseService.encodeImage(URL);
         return {
           generalNewsFind,
           URL,
+          encodedImg,
         };
       }),
     );
@@ -33,9 +37,12 @@ export class GeneralNewsService {
 
     const URL = await this.supabaseService.getURL(returnGeneralNews.image);
 
+    const encodedImg = await this.supabaseService.encodeImage(URL);
+
     return {
       returnGeneralNews,
       URL,
+      encodedImg,
     };
   }
 }

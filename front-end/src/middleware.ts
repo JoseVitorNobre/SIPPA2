@@ -8,19 +8,15 @@ export function middleware(request: NextRequest) {
    if (token) {
       if (request.nextUrl.pathname === '/') {
          return NextResponse.redirect(
-            new URL('/aplication/dashboard', request.url)
+            new URL('/application/dashboard', request.url)
          );
       }
       return NextResponse.next();
    } else {
-      return NextResponse.redirect(new URL('/signin', request.url), {
-         headers: {
-            'Set-Cookie': `redirectTo=${request.nextUrl.pathname}; path=/; max-age=120;`
-         }
-      });
+      return NextResponse.redirect(new URL('/auth/signin', request.url));
    }
 }
 
 export const config = {
-   matcher: ['/', '/aplication/:path*']
+   matcher: ['/', '/application/:path*']
 };

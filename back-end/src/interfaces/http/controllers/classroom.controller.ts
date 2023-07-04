@@ -24,9 +24,4 @@ export class ClassroomController {
   findClassPlans(@Param('id_classroom') id_classroom: string) {
     return this.classroomService.findClassPlans(id_classroom);
   }
-
-  @Get('classroom-news/:id_classroom')
-  findClassroomNews(@Param('id_classroom') id_classroom: string) {
-    return this.classroomService.findClassroomNews(id_classroom);
-  }
 }

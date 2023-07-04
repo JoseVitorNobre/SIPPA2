@@ -1,4 +1,4 @@
-import { getStudentCourse } from "../../../src/application/usecases/getStudentCourse.usecase";
+import { getStudentCourse } from '../../../src/application/usecases/getStudentCourse.usecase';
 
 describe('getStudentCourse function', () => {
     it('should return the name of the course especified by enum value', () => {

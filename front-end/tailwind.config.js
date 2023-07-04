@@ -12,15 +12,16 @@ module.exports = {
                100: '#E5F5F2',
                200: '#D9F1ED',
                300: '#A1D4CB',
-               400: '#00AF8F'
+               400: '#00AF8F',
+               600: '#017863'
             },
-            zync: {
+            zinc: {
                100: '#F3F3F9'
             }
          },
          gridTemplateColumns: {
             dashboard: '1fr 2fr',
-            activity: '1.5fr 1fr'
+            activity: '1.3fr minmax(650px, 650px)'
          },
          screens: {
             lg_p: { max: '1400px' },

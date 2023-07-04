@@ -1,23 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { FileRepository } from 'src/infrastructure/repositories/file.repository';
+import { StudentActivity } from '../../domain/entities/student-activity.entity';
+import { FileRepository } from '../../infrastructure/repositories/file.repository';
 
 @Injectable()
 export class FileService {
   constructor(private readonly fileRepository: FileRepository){};
 
   findAll() {
-    return `This action returns all file`;
+    return this.fileRepository.findMany();
   }
 
-  create(fileName: string, bucketName: string, file: Buffer) {
-    return this.fileRepository.createFile(fileName, bucketName, file);
+  async create(url: string, studentActivity_id: string) {
+    return await this.fileRepository.create(url, studentActivity_id);
   }
 
-  findOne(fileName: string, bucketName: string) {
-    return this.fileRepository.readFile(fileName, bucketName);
+  async findOne(url: string) {
+    return await this.fileRepository.findOne(url);
   }
 
-  remove(fileName: string, bucketName: string) {
-    return this.fileRepository.deleteFile(fileName, bucketName);
+  async updateOne(url: string, file) {
+    return await this.fileRepository.updateOne(url, file);
   }
 }

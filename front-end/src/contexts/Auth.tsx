@@ -5,13 +5,12 @@ import { AxiosError } from 'axios';
 import { AuthService } from '@/services/https/auth';
 import { ERRORS_MESSAGES } from '@/services/https/errors';
 
-import { AppError } from '@/utils/AppError';
+import { AppError } from '@/utils/app-error';
 import { StorageAuth } from '@/storage/StorageAuth';
 import { api } from '@/libs/axios';
 import { Context } from '@/@types/context';
 import { SinginDTO } from '@/domain/dtos/singin-dto';
 import { StudentModel } from '@/domain/models/student-model';
-import Cookies from 'js-cookie';
 
 type AuthContextData = {
    signin: (data: SinginDTO) => Promise<void>;
@@ -21,9 +20,6 @@ type AuthContextData = {
 export const AuthContext = createContext<AuthContextData>(
    {} as AuthContextData
 );
-
-//matricula: 342481
-//Senha: 123Dan
 
 export function AuthProvider({ children }: Context) {
    const [userLogged, setUserLogged] = useState<StudentModel>(
@@ -42,13 +38,12 @@ export function AuthProvider({ children }: Context) {
          const response = (await AuthService.signin(data)).data;
          updateUserAndToken(response.access_token, response.returnData);
          setUserLogged(response.returnData);
-         const redirect = Cookies.get('redirectTo') ?? '/aplication/dashboard';
-         router.push(redirect);
+         router.push('/application/dashboard');
       } catch (error) {
          if (error instanceof AxiosError && error.response?.status === 401) {
-            throw new AppError(ERRORS_MESSAGES.UNAUTHORIZED);
+            throw new AppError(ERRORS_MESSAGES.UNAUTHORIZED, 401);
          } else {
-            throw new AppError(ERRORS_MESSAGES.GENERIC);
+            throw new AppError(ERRORS_MESSAGES.GENERIC, 500);
          }
       }
    }

@@ -1,31 +1,35 @@
 import { Injectable } from "@nestjs/common";
-import { SupabaseService } from "src/application/services/supabase.service";
+import { PrismaService } from "../database/prisma/prisma.service";
+import { StudentActivity } from "../../domain/entities/student-activity.entity";
 
 @Injectable()
 export class FileRepository {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async createFile(fileName: string, bucketName: string, file: Buffer): Promise<any> {
-    const { data, error } = await this.supabaseService.create(fileName, bucketName, file)
-
-    if (error) {
-      throw new Error('Failed to create file');
-    }
-
-    return data;
+  async create(url: string, studentActivity_id: string, studentActivity?: StudentActivity) {
+    return await this.prismaService.file.create({
+      data: {
+        url,
+        studentActivity_id: studentActivity_id,
+        
+      }
+    })
   }
 
-  async deleteFile(fileName: string, bucketName: string): Promise<void> {
-    const { error } = await this.supabaseService.remove(fileName, bucketName);
-
-    if (error) {
-      throw new Error('Failed to delete file');
-    }
+  async findOne(url: string) {
+    return await this.prismaService.file.findUnique({
+      where: { url }
+    })
   }
 
-  async readFile(fileName: string, bucketName: string): Promise<any> {
-    const data = await this.supabaseService.findOne(fileName, bucketName);
+  async updateOne(url: string, file) {
+    return await this.prismaService.file.update({
+      where: {url},
+      data: file
+    })
+  }
 
-    return data;
+  async findMany() {
+    return this.prismaService.file.findMany();
   }
 }

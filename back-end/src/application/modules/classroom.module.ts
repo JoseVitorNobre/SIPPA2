@@ -8,7 +8,7 @@ import { UserModule } from './user.module';
 import { ClassroomStudentModule } from './classroom-student.module';
 import { GeneralNewsModule } from './general-news.module';
 import { ClassroomNewsModule } from './classroom-news.module';
-import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
+import { PrismaService } from '../../infrastructure/database/prisma/prisma.service';
 import { StudentModule } from './student.module';
 import { PlanModule } from './plan.module';
 import { ClassPlanModule } from './class-plan.module';
